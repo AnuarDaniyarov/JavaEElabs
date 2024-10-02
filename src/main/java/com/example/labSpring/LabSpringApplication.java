@@ -8,7 +8,6 @@ public class LabSpringApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LabSpringApplication.class, args);
-		System.out.println("Hello World");
 	}
 
 }
