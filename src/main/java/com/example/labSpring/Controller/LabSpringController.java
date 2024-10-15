@@ -1,16 +1,14 @@
 package com.example.labSpring.Controller;
 
-import com.example.labSpring.User;
-import com.example.labSpring.UserRepository;
+import com.example.labSpring.Entity.LabSpringEntity;
+import com.example.labSpring.LabSpringService.LabSpringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-import com.example.labSpring.UserService.UserService;
 
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -20,49 +18,41 @@ import java.util.*;
 @RequiredArgsConstructor
 public class LabSpringController {
 
-    //Hello World
+    private final LabSpringService labSpringService;
+
     @GetMapping("/{input}")
-    public String HelloWorld(@PathVariable String input) {
+    public String helloWorld(@PathVariable String input) {
         return new StringBuilder(input).toString();
     }
 
-    //Lab 1
     @GetMapping("/currentTime")
     public String getCurrentTime() {
         LocalDateTime now = LocalDateTime.now();
         String formattedDate = now.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));
 
         int todayWeek = LocalDateTime.now().getDayOfYear();
-        int week = 0;
-        if (todayWeek % 7 == 0) {
-            week = todayWeek / 7;
-        }
-        else {
-            week = todayWeek / 7 + 1;
-        }
+        int week = (todayWeek % 7 == 0) ? todayWeek / 7 : todayWeek / 7 + 1;
+
         return "Current Time: " + formattedDate + " Week: " + week;
     }
 
     @GetMapping("/api")
-    public List<Integer> getNumbers(@RequestParam(value = "q", defaultValue = "10") int n){
+    public List<Integer> getNumbers(@RequestParam(value = "q", defaultValue = "10") int n) {
         List<Integer> list = new ArrayList<>();
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             list.add(i);
-        };
+        }
         return list;
     }
 
     @GetMapping("/random_number")
-    public int randomNumber(){
-        return new Random().nextInt(500)+1;
+    public int randomNumber() {
+        return new Random().nextInt(500) + 1;
     }
 
     @GetMapping("/fib")
     public int getFibonacci(@RequestParam(value = "number", defaultValue = "10") int n) {
-        if(n <= 1 ){
-            return n;
-        }
-        return getFibonacci(n-1) + getFibonacci(n-2);
+        return (n <= 1) ? n : getFibonacci(n - 1) + getFibonacci(n - 2);
     }
 
     @GetMapping("/api/{input}")
@@ -70,37 +60,27 @@ public class LabSpringController {
         return new StringBuilder(input).reverse().toString();
     }
 
-    //Lab 3
-    private final UserService userService;
-
-    //Task 1
     @GetMapping("/api/greeet")
     public String greet() {
         return "Hello World";
     }
 
-    //task 2
     @GetMapping("/api/greet")
-    public String greet(@RequestParam( name = "name", defaultValue = "Guest")String name){
+    public String greet(@RequestParam(name = "name", defaultValue = "Guest") String name) {
         return "Hello " + name + "!";
     }
 
-
-    //Task 3
-    @PostMapping("/api/book")
+    @PostMapping("/api/books/book")
     public Map<String, Object> addBook(@RequestBody Map<String, Object> book) {
         book.put("status", "received");
         return book;
     }
 
-
-    //Task 4
     @GetMapping("/user/{id}")
-    public String getUserById(@PathVariable("id") long id ) {
+    public String getUserById(@PathVariable("id") long id) {
         return "User with id " + id + " found";
     }
 
-    //Task 5
     @PutMapping("/users/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(
             @PathVariable("id") long id,
@@ -117,35 +97,30 @@ public class LabSpringController {
         return ResponseEntity.ok(response);
     }
 
-    //Task 6
     @DeleteMapping("/user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
+        labSpringService.deleteLabSpring(id);
         return ResponseEntity.ok("User with ID " + id + " has been deleted.");
     }
 
-    //Task 7
     @PostMapping("/user")
-    public ResponseEntity<String> createUser(@Valid @RequestBody User user){
-        userService.addUser(user);
-        return ResponseEntity.ok("User created " + user.getName() + " " + "user age " + user.getAge());
+    public ResponseEntity<String> createUser(@Valid @RequestBody LabSpringEntity labSpring) {
+        labSpringService.createLabSpring(labSpring);
+        return ResponseEntity.ok("User created " + labSpring.getName() + " user age " + labSpring.getAge());
     }
 
-    //Task 9
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> userList = userService.getUsers();
+    public ResponseEntity<List<LabSpringEntity>> getAllUsers() {
+        List<LabSpringEntity> userList = labSpringService.getAllLabSpring();
         return ResponseEntity.ok(userList);
     }
 
-
-    private UserRepository userRepository;
-    @GetMapping("/api//users")
-    public Page<User> getUsers(
+    @GetMapping("/api/users")
+    public Page<LabSpringEntity> getUsers(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return userRepository.findByNameContaining(name, pageRequest);
+        return labSpringService.getUsersWithNameFilter(name, pageRequest);
     }
 }
