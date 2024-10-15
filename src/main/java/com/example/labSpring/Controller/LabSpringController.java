@@ -1,15 +1,17 @@
 package com.example.labSpring.Controller;
 
 import com.example.labSpring.User;
+import com.example.labSpring.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import com.example.labSpring.UserService.UserService;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
@@ -99,7 +101,7 @@ public class LabSpringController {
     }
 
     //Task 5
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(
             @PathVariable("id") long id,
             @RequestBody Map<String, Object> user) {
@@ -133,5 +135,17 @@ public class LabSpringController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> userList = userService.getUsers();
         return ResponseEntity.ok(userList);
+    }
+
+
+    private UserRepository userRepository;
+    @GetMapping("/api//users")
+    public Page<User> getUsers(
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return userRepository.findByNameContaining(name, pageRequest);
     }
 }
