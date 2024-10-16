@@ -2,9 +2,11 @@ package com.example.labSpring.Controller;
 
 import com.example.labSpring.Entity.LabSpringEntity;
 import com.example.labSpring.LabSpringService.LabSpringService;
+import com.example.labSpring.Repository.LabSpringRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +21,11 @@ import java.util.*;
 public class LabSpringController {
 
     private final LabSpringService labSpringService;
+    private final LabSpringRepository labSpringRepository;
 
     @GetMapping("/{input}")
     public String helloWorld(@PathVariable String input) {
-        return new StringBuilder(input).toString();
+        return "Hello WOrld" + new StringBuilder(input).toString();
     }
 
     @GetMapping("/currentTime")
@@ -87,11 +90,13 @@ public class LabSpringController {
             @RequestBody Map<String, Object> user) {
 
         String newName = (String) user.get("name");
+        String newSurname = (String) user.get("sur_name");
         int newAge = (int) user.get("age");
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "User with id " + id + " updated");
         response.put("name", newName);
+        response.put("sur_name", newSurname);
         response.put("age", newAge);
 
         return ResponseEntity.ok(response);
@@ -106,7 +111,7 @@ public class LabSpringController {
     @PostMapping("/user")
     public ResponseEntity<String> createUser(@Valid @RequestBody LabSpringEntity labSpring) {
         labSpringService.createLabSpring(labSpring);
-        return ResponseEntity.ok("User created " + labSpring.getName() + " user age " + labSpring.getAge());
+        return ResponseEntity.ok("User created " + labSpring.getName() + labSpring.getSurName() + " user age " + labSpring.getAge());
     }
 
     @GetMapping("/users")
@@ -115,12 +120,12 @@ public class LabSpringController {
         return ResponseEntity.ok(userList);
     }
 
-    @GetMapping("/api/users")
+    @GetMapping("/api/pagin")
     public Page<LabSpringEntity> getUsers(
-            @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return labSpringService.getUsersWithNameFilter(name, pageRequest);
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit
+    )
+    {
+        return labSpringRepository.findAll(PageRequest.of(offset, limit, Sort.by(Sort.Direction.ASC,"name")));
     }
 }

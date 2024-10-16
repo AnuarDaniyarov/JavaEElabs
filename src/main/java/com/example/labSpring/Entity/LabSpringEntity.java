@@ -2,7 +2,7 @@ package com.example.labSpring.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name = "Users")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
