@@ -1,4 +1,7 @@
 spring:
+#  data:
+#    mongodb:
+#      url: jdbc:mongodb://atlas-sql-670f86da66050b5489071084-mmpf3.a.query.mongodb.net/sample_mflix?ssl=true&authSource=admin
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres

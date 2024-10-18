@@ -69,7 +69,7 @@ public class LabSpringController {
     }
 
     @GetMapping("/api/greet")
-    public String greet(@RequestParam(name = "name", defaultValue = "Guest") String name) {
+    public String greet(@RequestParam(name = "name", defaultValue = "Anuar") String name) {
         return "Hello " + name + "!";
     }
 

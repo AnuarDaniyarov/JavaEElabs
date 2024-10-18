@@ -36,6 +36,7 @@ public class LabSpringService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
         labSpring.setName(labSpringDetails.getName());
+        labSpring.setSurName(labSpringDetails.getSurName());
         labSpring.setAge(labSpringDetails.getAge());
         labSpring.setEmail(labSpringDetails.getEmail());
         return labSpringRepository.save(labSpring);
@@ -45,7 +46,4 @@ public class LabSpringService {
         labSpringRepository.deleteById(id);
     }
 
-    public Page<LabSpringEntity> getUsersWithNameFilter(String name, PageRequest pageRequest) {
-        return labSpringRepository.findByNameContaining(name, pageRequest);
-    }
 }
