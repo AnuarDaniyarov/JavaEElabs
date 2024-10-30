@@ -27,20 +27,20 @@ public class LabSpringService {
     return labSpringRepository.findAll();
     }
 
-    public Optional<LabSpringEntity> getLabSpringById(Long id){
-        return labSpringRepository.findById(id);
-    }
-
-    public LabSpringEntity updateLabSpring(Long id, LabSpringEntity labSpringDetails) {
-        LabSpringEntity labSpring = labSpringRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        labSpring.setName(labSpringDetails.getName());
-        labSpring.setSurName(labSpringDetails.getSurName());
-        labSpring.setAge(labSpringDetails.getAge());
-        labSpring.setEmail(labSpringDetails.getEmail());
-        return labSpringRepository.save(labSpring);
-    }
+//    public Optional<LabSpringEntity> getLabSpringById(Long id){
+//        return labSpringRepository.findById(id);
+//    }
+//
+//    public LabSpringEntity updateLabSpring(Long id, LabSpringEntity labSpringDetails) {
+//        LabSpringEntity labSpring = labSpringRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+//
+//        labSpring.setName(labSpringDetails.getName());
+//        labSpring.setSurName(labSpringDetails.getSurName());
+//        labSpring.setAge(labSpringDetails.getAge());
+//        labSpring.setEmail(labSpringDetails.getEmail());
+//        return labSpringRepository.save(labSpring);
+//    }
 
     public void deleteLabSpring(Long id) {
         labSpringRepository.deleteById(id);

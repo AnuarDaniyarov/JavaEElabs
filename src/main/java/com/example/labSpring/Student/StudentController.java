@@ -19,7 +19,7 @@ public class StudentController {
         return studentService.getAllStudents();
     }
 
-    @PostMapping("/students")
+    @PostMapping("/student")
     public ResponseEntity<String> createStudent(@Valid @RequestBody Student student) {
         studentService.addStudent(student);
         return ResponseEntity.ok("Student created: " + student.getName() + ", Age: " + student.getAge() + ", Email: " + student.getEmail());
@@ -31,18 +31,13 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
-    @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
-    }
-
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
         Student updateStudent = studentService.updateStudent(id, studentDetails);
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
